@@ -6,7 +6,8 @@ const bcrypt = require('bcryptjs');
 // POST /api/seed  — carga datos demo (solo si la DB está vacía o con ?force=true)
 router.post('/', async (req, res) => {
   const secret = req.headers['x-seed-secret'];
-  if (secret !== process.env.SEED_SECRET) {
+  const validSecret = (process.env.SEED_SECRET || '').trim() || 'gestpro2024';
+  if (secret !== validSecret) {
     return res.status(403).json({ error: 'Forbidden' });
   }
 

@@ -24,6 +24,7 @@ app.use('/api/facturas', require('./routes/facturas'));
 app.use('/api/reportes', require('./routes/reportes'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+app.use('/api/seed', require('./routes/seed'));
 
 // Servir frontend compilado en producción
 const publicDir = path.join(__dirname, '../public');

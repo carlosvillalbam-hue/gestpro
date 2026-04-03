@@ -99,10 +99,8 @@ export default function Presupuestos() {
         })
       }
 
-      // 3. Cambiar estado del presupuesto a aprobado (por si no estaba) y vincular proyecto
-      await api.put(`/presupuestos/${convertPres.id}`, {
-        ...convertPres,
-        estado: 'aprobado',
+      // 3. Vincular presupuesto al nuevo proyecto y marcarlo aprobado
+      await api.patch(`/presupuestos/${convertPres.id}/vincular-proyecto`, {
         proyecto_id: proyectoId,
       })
 

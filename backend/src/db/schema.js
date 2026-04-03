@@ -68,6 +68,9 @@ async function initializeDb() {
       fecha_fin_estimada TEXT,
       estado TEXT NOT NULL DEFAULT 'activo',
       presupuesto_total REAL DEFAULT 0,
+      po_numero TEXT,
+      po_documento TEXT,
+      presupuesto_origen_id INTEGER,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (cliente_id) REFERENCES clientes(id),
       FOREIGN KEY (responsable_id) REFERENCES usuarios(id)

@@ -26,6 +26,11 @@ app.use('/api/reportes', require('./routes/reportes'));
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/seed', require('./routes/seed'));
 
+// Servir archivos subidos
+const uploadsDir = process.env.UPLOAD_DIR || path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+app.use('/uploads', express.static(uploadsDir));
+
 // Servir frontend compilado en producción
 const publicDir = path.join(__dirname, '../public');
 if (fs.existsSync(publicDir)) {

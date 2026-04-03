@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import api from '../services/api'
 import Modal from '../components/Modal'
 import StatusBadge from '../components/StatusBadge'
-import { Plus, Pencil, Eye, Search, FolderKanban } from 'lucide-react'
+import { Plus, Pencil, Eye, Search, FolderKanban, Paperclip, Download } from 'lucide-react'
 
-const empty = { folio: '', nombre: '', serie: '', descripcion: '', cliente_id: '', contrato_id: '', responsable_id: '', fecha_inicio: '', fecha_fin_estimada: '', estado: 'activo' }
+const empty = { folio: '', nombre: '', serie: '', descripcion: '', cliente_id: '', contrato_id: '', responsable_id: '', fecha_inicio: '', fecha_fin_estimada: '', estado: 'activo', po_numero: '' }
 
 export default function Proyectos() {
   const [proyectos, setProyectos] = useState([])
@@ -97,7 +97,16 @@ export default function Proyectos() {
                       <FolderKanban size={15} className="text-blue-400" />
                       <span className="font-medium">{p.nombre}</span>
                     </div>
-                    {p.serie && <span className="text-xs text-gray-400">Serie: {p.serie}</span>}
+                    <div className="flex gap-3 mt-0.5">
+                      {p.serie && <span className="text-xs text-gray-400">Serie: {p.serie}</span>}
+                      {p.po_numero && <span className="text-xs text-blue-600 font-medium">PO: {p.po_numero}</span>}
+                      {p.po_documento && (
+                        <a href={`/api/proyectos/${p.id}/po-documento`} target="_blank" rel="noreferrer"
+                          className="text-xs text-green-600 hover:text-green-800 flex items-center gap-1">
+                          <Paperclip size={11} /> Doc. PO
+                        </a>
+                      )}
+                    </div>
                   </td>
                   <td className="table-cell text-gray-500">{p.cliente_nombre || '—'}</td>
                   <td className="table-cell text-gray-500">{p.responsable_nombre || '—'}</td>
@@ -168,6 +177,10 @@ export default function Proyectos() {
             <div>
               <label className="label">Fecha Fin Estimada</label>
               <input type="date" className="input" value={form.fecha_fin_estimada || ''} onChange={e => setForm({ ...form, fecha_fin_estimada: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Número de PO</label>
+              <input className="input" placeholder="Ej: PO-2024-0042" value={form.po_numero || ''} onChange={e => setForm({ ...form, po_numero: e.target.value })} />
             </div>
             <div className="col-span-2">
               <label className="label">Descripción</label>

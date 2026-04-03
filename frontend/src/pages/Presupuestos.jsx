@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import api from '../services/api'
 import Modal from '../components/Modal'
 import StatusBadge from '../components/StatusBadge'
-import { Plus, Pencil, Trash2, Search, ChevronDown, ChevronUp } from 'lucide-react'
+import { Plus, Pencil, Trash2, Search, ChevronDown, ChevronUp, ArrowRightCircle, Paperclip } from 'lucide-react'
 
 const emptyForm = {
   folio: '', proyecto_id: '', nombre: '', descripcion: '',
@@ -12,11 +12,18 @@ const emptyForm = {
 
 const emptyPartida = { categoria: 'materiales', descripcion: '', unidad: 'pza', cantidad: 1, precio_unitario: 0 }
 
+const emptyConversion = {
+  folio: '', nombre: '', serie: '', descripcion: '',
+  cliente_id: '', contrato_id: '', fecha_inicio: '', fecha_fin_estimada: '',
+  po_numero: '', po_documento: null
+}
+
 export default function Presupuestos() {
   const [presupuestos, setPresupuestos] = useState([])
   const [filtered, setFiltered] = useState([])
   const [proyectos, setProyectos] = useState([])
   const [clientes, setClientes] = useState([])
+  const [contratos, setContratos] = useState([])
   const [search, setSearch] = useState('')
   const [estadoFilter, setEstadoFilter] = useState('')
   const [modal, setModal] = useState(false)
@@ -25,11 +32,18 @@ export default function Presupuestos() {
   const [loading, setLoading] = useState(false)
   const [showPartidas, setShowPartidas] = useState(false)
 
+  // Modal conversión a proyecto
+  const [convertModal, setConvertModal] = useState(false)
+  const [convertForm, setConvertForm] = useState(emptyConversion)
+  const [convertPres, setConvertPres] = useState(null)
+  const [convertLoading, setConvertLoading] = useState(false)
+  const [archivoNombre, setArchivoNombre] = useState('')
+
   const load = () => Promise.all([
-    api.get('/presupuestos'), api.get('/proyectos'), api.get('/clientes')
-  ]).then(([p, pr, c]) => {
+    api.get('/presupuestos'), api.get('/proyectos'), api.get('/clientes'), api.get('/contratos')
+  ]).then(([p, pr, c, ct]) => {
     setPresupuestos(p.data); setFiltered(p.data)
-    setProyectos(pr.data); setClientes(c.data)
+    setProyectos(pr.data); setClientes(c.data); setContratos(ct.data)
   })
 
   useEffect(() => { load() }, [])
@@ -47,6 +61,59 @@ export default function Presupuestos() {
     const res = await api.get(`/presupuestos/${p.id}`)
     setForm({ ...res.data, partidas: res.data.partidas || [] })
     setEditId(p.id); setShowPartidas(false); setModal(true)
+  }
+
+  const openConvert = (pres) => {
+    setConvertPres(pres)
+    // Pre-llenar con datos del presupuesto
+    const hoy = new Date().toISOString().split('T')[0]
+    const folioBase = pres.folio.replace('PRES', 'PRY')
+    setConvertForm({
+      ...emptyConversion,
+      folio: folioBase,
+      nombre: pres.proyecto_nombre || pres.nombre,
+      cliente_id: pres.cliente_id || '',
+      fecha_inicio: hoy,
+    })
+    setArchivoNombre('')
+    setConvertModal(true)
+  }
+
+  const handleConvert = async e => {
+    e.preventDefault()
+    setConvertLoading(true)
+    try {
+      // 1. Crear el proyecto
+      const res = await api.post('/proyectos', {
+        ...convertForm,
+        presupuesto_origen_id: convertPres.id,
+      })
+      const proyectoId = res.data.id
+
+      // 2. Subir documento PO si existe
+      if (convertForm.po_documento) {
+        const fd = new FormData()
+        fd.append('documento', convertForm.po_documento)
+        await api.post(`/proyectos/${proyectoId}/po-documento`, fd, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        })
+      }
+
+      // 3. Cambiar estado del presupuesto a aprobado (por si no estaba) y vincular proyecto
+      await api.put(`/presupuestos/${convertPres.id}`, {
+        ...convertPres,
+        estado: 'aprobado',
+        proyecto_id: proyectoId,
+      })
+
+      setConvertModal(false)
+      load()
+      alert(`✅ Proyecto ${convertForm.folio} creado exitosamente`)
+    } catch (err) {
+      alert(err.response?.data?.error || 'Error al crear proyecto')
+    } finally {
+      setConvertLoading(false)
+    }
   }
 
   const addPartida = () => setForm(f => ({ ...f, partidas: [...f.partidas, { ...emptyPartida }] }))
@@ -77,6 +144,9 @@ export default function Presupuestos() {
 
   const fmt = n => n ? `$${Number(n).toLocaleString('es-MX')}` : '$0'
   const estados = ['borrador', 'enviado', 'aprobado', 'no_aprobado']
+
+  // Contratos filtrados por cliente seleccionado
+  const contratosFiltrados = contratos.filter(c => !convertForm.cliente_id || String(c.cliente_id) === String(convertForm.cliente_id))
 
   return (
     <div className="space-y-6">
@@ -123,7 +193,16 @@ export default function Presupuestos() {
                   <td className="table-cell text-right font-semibold text-gray-900">{fmt(p.total)}</td>
                   <td className="table-cell"><StatusBadge status={p.estado} /></td>
                   <td className="table-cell">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
+                      {p.estado === 'aprobado' && (
+                        <button
+                          onClick={() => openConvert(p)}
+                          title="Convertir a Proyecto"
+                          className="text-green-600 hover:text-green-800 p-1 flex items-center gap-1 text-xs font-medium"
+                        >
+                          <ArrowRightCircle size={15} /> Crear Proyecto
+                        </button>
+                      )}
                       <button onClick={() => openEdit(p)} className="text-blue-600 hover:text-blue-800 p-1"><Pencil size={15} /></button>
                       <button onClick={() => handleDelete(p.id)} className="text-red-500 hover:text-red-700 p-1"><Trash2 size={15} /></button>
                     </div>
@@ -136,6 +215,7 @@ export default function Presupuestos() {
         </div>
       </div>
 
+      {/* Modal: Nuevo/Editar Presupuesto */}
       <Modal open={modal} onClose={() => setModal(false)} title={editId ? 'Editar Presupuesto' : 'Nuevo Presupuesto'} size="xl">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
@@ -223,6 +303,114 @@ export default function Presupuestos() {
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={() => setModal(false)} className="btn-secondary">Cancelar</button>
             <button type="submit" disabled={loading} className="btn-primary">{loading ? 'Guardando...' : 'Guardar'}</button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Modal: Convertir Presupuesto a Proyecto */}
+      <Modal open={convertModal} onClose={() => setConvertModal(false)} title="Convertir Presupuesto a Proyecto" size="xl">
+        {convertPres && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+            Presupuesto: <strong>{convertPres.folio}</strong> — {convertPres.nombre} — <strong>${Number(convertPres.total).toLocaleString('es-MX')}</strong>
+          </div>
+        )}
+        <form onSubmit={handleConvert} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="label">Folio del Proyecto *</label>
+              <input className="input" value={convertForm.folio}
+                onChange={e => setConvertForm({ ...convertForm, folio: e.target.value })} required />
+            </div>
+            <div>
+              <label className="label">Serie</label>
+              <input className="input" value={convertForm.serie}
+                onChange={e => setConvertForm({ ...convertForm, serie: e.target.value })}
+                placeholder="IND, RES, OBP..." />
+            </div>
+            <div className="col-span-2">
+              <label className="label">Nombre del Proyecto *</label>
+              <input className="input" value={convertForm.nombre}
+                onChange={e => setConvertForm({ ...convertForm, nombre: e.target.value })} required />
+            </div>
+            <div>
+              <label className="label">Cliente</label>
+              <select className="input" value={convertForm.cliente_id}
+                onChange={e => setConvertForm({ ...convertForm, cliente_id: e.target.value, contrato_id: '' })}>
+                <option value="">Seleccionar...</option>
+                {clientes.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="label">Contrato</label>
+              <select className="input" value={convertForm.contrato_id}
+                onChange={e => setConvertForm({ ...convertForm, contrato_id: e.target.value })}>
+                <option value="">Sin contrato</option>
+                {contratosFiltrados.map(c => <option key={c.id} value={c.id}>{c.numero} — {c.nombre}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="label">Fecha Inicio</label>
+              <input type="date" className="input" value={convertForm.fecha_inicio}
+                onChange={e => setConvertForm({ ...convertForm, fecha_inicio: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Fecha Fin Estimada</label>
+              <input type="date" className="input" value={convertForm.fecha_fin_estimada}
+                onChange={e => setConvertForm({ ...convertForm, fecha_fin_estimada: e.target.value })} />
+            </div>
+          </div>
+
+          {/* Sección PO */}
+          <div className="border rounded-lg p-4 bg-blue-50 border-blue-200 space-y-3">
+            <h3 className="font-medium text-blue-900 flex items-center gap-2">
+              <Paperclip size={16} /> Orden de Compra del Cliente (PO)
+            </h3>
+            <div>
+              <label className="label">Número de PO</label>
+              <input className="input" placeholder="Ej: PO-2024-0042"
+                value={convertForm.po_numero}
+                onChange={e => setConvertForm({ ...convertForm, po_numero: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">Adjuntar documento PO</label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <div className="btn-secondary flex items-center gap-2 text-sm py-2">
+                  <Paperclip size={15} />
+                  {archivoNombre || 'Seleccionar archivo...'}
+                </div>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xls,.xlsx"
+                  className="hidden"
+                  onChange={e => {
+                    const file = e.target.files[0]
+                    if (file) {
+                      setConvertForm({ ...convertForm, po_documento: file })
+                      setArchivoNombre(file.name)
+                    }
+                  }}
+                />
+              </label>
+              {archivoNombre && (
+                <p className="text-xs text-green-700 mt-1 flex items-center gap-1">
+                  ✓ {archivoNombre}
+                </p>
+              )}
+              <p className="text-xs text-gray-400 mt-1">PDF, Word, Excel o imagen. Máx. 10MB</p>
+            </div>
+          </div>
+
+          <div>
+            <label className="label">Descripción</label>
+            <textarea className="input" rows={2} value={convertForm.descripcion}
+              onChange={e => setConvertForm({ ...convertForm, descripcion: e.target.value })} />
+          </div>
+
+          <div className="flex justify-end gap-3 pt-2">
+            <button type="button" onClick={() => setConvertModal(false)} className="btn-secondary">Cancelar</button>
+            <button type="submit" disabled={convertLoading} className="btn-primary">
+              {convertLoading ? 'Creando proyecto...' : '✓ Crear Proyecto'}
+            </button>
           </div>
         </form>
       </Modal>

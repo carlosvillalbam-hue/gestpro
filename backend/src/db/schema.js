@@ -211,6 +211,18 @@ async function initializeDb() {
     console.log('Usuario admin creado: admin@empresa.com / admin123');
   }
 
+  // Migraciones: agregar columnas si no existen
+  const cols = db.prepare("PRAGMA table_info(proyectos)").all().map(c => c.name);
+  if (!cols.includes('po_numero')) {
+    db.exec("ALTER TABLE proyectos ADD COLUMN po_numero TEXT");
+  }
+  if (!cols.includes('po_documento')) {
+    db.exec("ALTER TABLE proyectos ADD COLUMN po_documento TEXT");
+  }
+  if (!cols.includes('presupuesto_origen_id')) {
+    db.exec("ALTER TABLE proyectos ADD COLUMN presupuesto_origen_id INTEGER");
+  }
+
   console.log('Base de datos lista en:', DB_PATH);
   return db;
 }

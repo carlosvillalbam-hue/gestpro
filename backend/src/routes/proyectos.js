@@ -63,11 +63,16 @@ router.post('/', (req, res) => {
       INSERT INTO proyectos (folio, nombre, serie, descripcion, cliente_id, contrato_id,
         responsable_id, fecha_inicio, fecha_fin_estimada, po_numero, presupuesto_origen_id)
       VALUES (?,?,?,?,?,?,?,?,?,?,?)
-    `).run(folio, nombre, serie, descripcion, cliente_id, contrato_id,
-           responsable_id, fecha_inicio, fecha_fin_estimada, po_numero || null, presupuesto_origen_id || null);
+    `).run(
+      folio, nombre, serie || null, descripcion || null,
+      cliente_id || null, contrato_id || null, responsable_id || null,
+      fecha_inicio || null, fecha_fin_estimada || null,
+      po_numero || null, presupuesto_origen_id || null
+    );
     res.json({ id: result.lastInsertRowid });
   } catch (err) {
-    res.status(400).json({ error: 'El folio ya existe' });
+    console.error('Error creando proyecto:', err.message);
+    res.status(400).json({ error: err.message || 'El folio ya existe' });
   }
 });
 
@@ -79,8 +84,10 @@ router.put('/:id', (req, res) => {
     UPDATE proyectos SET folio=?, nombre=?, serie=?, descripcion=?, cliente_id=?, contrato_id=?,
     responsable_id=?, fecha_inicio=?, fecha_fin_estimada=?, estado=?, presupuesto_total=?, po_numero=?
     WHERE id=?
-  `).run(folio, nombre, serie, descripcion, cliente_id, contrato_id, responsable_id,
-         fecha_inicio, fecha_fin_estimada, estado, presupuesto_total, po_numero || null, req.params.id);
+  `).run(folio, nombre, serie || null, descripcion || null,
+         cliente_id || null, contrato_id || null, responsable_id || null,
+         fecha_inicio || null, fecha_fin_estimada || null,
+         estado, presupuesto_total || null, po_numero || null, req.params.id);
   res.json({ ok: true });
 });
 

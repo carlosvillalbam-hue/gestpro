@@ -2,250 +2,354 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GestPro - Diagrama de Flujo</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 24px; }
-  h1 { text-align: center; color: #1e40af; font-size: 22px; margin-bottom: 4px; }
-  p.sub { text-align: center; color: #64748b; font-size: 13px; margin-bottom: 28px; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f4f8;
+  margin: 0;
+  padding: 20px;
+  color: #1a202c;
+}
+h1 {
+  text-align: center;
+  color: #2b6cb0;
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+.subtitle {
+  text-align: center;
+  color: #718096;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2d3748;
+  border-left: 4px solid #4299e1;
+  padding-left: 12px;
+  margin-bottom: 18px;
+}
 
-  .diagram { display: flex; flex-direction: column; gap: 20px; max-width: 1100px; margin: 0 auto; }
+/* ARQUITECTURA */
+.arch-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.arch-box {
+  border-radius: 10px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 160px;
+  flex: 1;
+  max-width: 220px;
+}
+.arch-box .icon { font-size: 32px; margin-bottom: 8px; }
+.arch-box h3 { font-size: 14px; font-weight: bold; margin: 0 0 6px; }
+.arch-box p { font-size: 12px; color: #4a5568; margin: 0; line-height: 1.6; }
+.arch-arrow { font-size: 28px; color: #a0aec0; align-self: center; }
+.box-blue   { background: #ebf8ff; border: 2px solid #4299e1; }
+.box-green  { background: #f0fff4; border: 2px solid #48bb78; }
+.box-yellow { background: #fffff0; border: 2px solid #ecc94b; }
+.box-purple { background: #faf5ff; border: 2px solid #9f7aea; }
 
-  /* ── ARCH ROW ── */
-  .arch { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .arch-box { border-radius: 12px; padding: 14px 20px; text-align: center; flex: 1; min-width: 200px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-  .arch-box .icon { font-size: 28px; margin-bottom: 6px; }
-  .arch-box h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-  .arch-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
-  .fe  { background: #eff6ff; border: 2px solid #3b82f6; }
-  .be  { background: #f0fdf4; border: 2px solid #22c55e; }
-  .db  { background: #fefce8; border: 2px solid #eab308; }
-  .cloud { background: #fdf4ff; border: 2px solid #a855f7; }
+/* FLUJO DE NEGOCIO */
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.flow-node {
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 90px;
+}
+.flow-node h4 { font-size: 12px; font-weight: bold; margin: 0 0 3px; }
+.flow-node p  { font-size: 10px; color: #4a5568; margin: 0; }
+.flow-arrow { font-size: 20px; color: #a0aec0; }
+.fn-blue   { background: #dbeafe; border: 2px solid #3b82f6; }
+.fn-green  { background: #dcfce7; border: 2px solid #22c55e; }
+.fn-yellow { background: #fef3c7; border: 2px solid #f59e0b; }
+.fn-purple { background: #ede9fe; border: 2px solid #8b5cf6; }
+.fn-orange { background: #ffedd5; border: 2px solid #f97316; }
+.fn-teal   { background: #d1fae5; border: 2px solid #10b981; }
+.fn-pink   { background: #fce7f3; border: 2px solid #ec4899; }
+.fn-sky    { background: #e0f2fe; border: 2px solid #0ea5e9; }
+.fn-red    { background: #fee2e2; border: 2px solid #ef4444; }
 
-  /* ── ARROWS ── */
-  .arrow-row { display: flex; justify-content: center; gap: 120px; }
-  .arrow { text-align: center; font-size: 20px; color: #94a3b8; }
-  .arrow span { display: block; font-size: 10px; color: #94a3b8; }
+/* NUEVO FLUJO PO */
+.po-steps {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: #faf5ff;
+  border: 2px dashed #9f7aea;
+  border-radius: 10px;
+  padding: 16px;
+}
+.po-step {
+  background: white;
+  border-radius: 8px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 110px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.po-step .num {
+  display: inline-block;
+  background: #9f7aea;
+  color: white;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.po-step strong { display: block; font-size: 12px; margin-bottom: 3px; }
+.po-step span { font-size: 10px; color: #718096; }
+.po-arrow { font-size: 22px; color: #9f7aea; font-weight: bold; }
 
-  /* ── FLOW ── */
-  .flow-title { text-align: center; font-size: 15px; font-weight: 700; color: #475569; margin-top: 8px; }
+/* ESTADOS */
+.states-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.state-badge {
+  border-radius: 20px;
+  padding: 7px 18px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.s1 { background: #f7fafc; border: 2px solid #a0aec0; color: #4a5568; }
+.s2 { background: #ebf8ff; border: 2px solid #4299e1; color: #2b6cb0; }
+.s3 { background: #f0fff4; border: 2px solid #48bb78; color: #276749; }
+.s4 { background: #faf5ff; border: 2px solid #9f7aea; color: #553c9a; }
+.s-arr { font-size: 20px; color: #a0aec0; }
+.new-badge {
+  background: #fefcbf;
+  border: 1px solid #f6e05e;
+  color: #744210;
+  font-size: 9px;
+  font-weight: bold;
+  border-radius: 10px;
+  padding: 2px 8px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
 
-  .flow-row { display: flex; align-items: center; justify-content: center; gap: 0; flex-wrap: wrap; }
-  .node { border-radius: 10px; padding: 10px 16px; text-align: center; min-width: 110px; box-shadow: 0 2px 6px rgba(0,0,0,.1); position: relative; }
-  .node h4 { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
-  .node p  { font-size: 10px; color: #64748b; }
-  .conn { font-size: 22px; color: #cbd5e1; padding: 0 4px; align-self: center; }
-  .conn-label { font-size: 9px; color: #94a3b8; display: block; text-align: center; line-height: 1; }
-
-  .n-client { background: #dbeafe; border: 2px solid #3b82f6; }
-  .n-contract { background: #dcfce7; border: 2px solid #16a34a; }
-  .n-pres { background: #fef9c3; border: 2px solid #ca8a04; }
-  .n-proj { background: #ede9fe; border: 2px solid #7c3aed; }
-  .n-po { background: #fee2e2; border: 2px solid #dc2626; }
-  .n-oc { background: #ffedd5; border: 2px solid #ea580c; }
-  .n-inv { background: #f0fdf4; border: 2px solid #15803d; }
-  .n-fac { background: #fce7f3; border: 2px solid #be185d; }
-  .n-rep { background: #e0f2fe; border: 2px solid #0284c7; }
-
-  /* ── CONVERSION HIGHLIGHT ── */
-  .highlight-box { border: 2px dashed #7c3aed; border-radius: 14px; padding: 16px; background: #faf5ff; }
-  .highlight-box .hl-title { font-size: 12px; font-weight: 700; color: #7c3aed; margin-bottom: 12px; text-align: center; }
-
-  .conv-row { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
-  .conv-step { background: white; border-radius: 8px; padding: 8px 12px; text-align: center; font-size: 11px; box-shadow: 0 1px 4px rgba(0,0,0,.1); min-width: 100px; }
-  .conv-step strong { display: block; font-size: 12px; margin-bottom: 2px; }
-  .conv-step span { color: #64748b; font-size: 10px; }
-  .conv-arr { font-size: 18px; color: #7c3aed; }
-
-  /* ── MODULES GRID ── */
-  .modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-  .mod { border-radius: 10px; padding: 12px; text-align: center; }
-  .mod .ico { font-size: 22px; margin-bottom: 4px; }
-  .mod h4 { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
-  .mod ul { list-style: none; font-size: 10px; color: #64748b; text-align: left; line-height: 1.8; padding-left: 4px; }
-
-  /* ── STATUS FLOW ── */
-  .status-row { display: flex; align-items: center; justify-content: center; gap: 4px; flex-wrap: wrap; }
-  .status { border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 600; }
-  .s-borrador { background: #f1f5f9; border: 1.5px solid #94a3b8; color: #475569; }
-  .s-enviado  { background: #dbeafe; border: 1.5px solid #3b82f6; color: #1d4ed8; }
-  .s-aprobado { background: #dcfce7; border: 1.5px solid #16a34a; color: #15803d; }
-  .s-proyecto { background: #ede9fe; border: 1.5px solid #7c3aed; color: #6d28d9; }
-  .s-arrow { font-size: 16px; color: #94a3b8; }
-  .s-new { background: #fef3c7; border: 1.5px solid #d97706; color: #92400e; font-size: 9px; padding: 2px 6px; border-radius: 10px; vertical-align: middle; }
-
-  /* section label */
-  .section { background: white; border-radius: 14px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
-  .section-title { font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 14px; display: flex; align-items: center; gap-6px; }
-  .section-title::before { content: ''; display: inline-block; width: 4px; height: 16px; background: #3b82f6; border-radius: 2px; margin-right: 8px; }
+/* MÓDULOS */
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.module-card {
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+.module-card .mod-icon { font-size: 26px; margin-bottom: 6px; }
+.module-card h4 { font-size: 13px; font-weight: bold; margin: 0 0 6px; }
+.module-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  font-size: 11px;
+  color: #4a5568;
+  line-height: 2;
+}
+.new-tag { color: #9f7aea; font-weight: bold; }
+.legend { text-align: right; font-size: 11px; color: #a0aec0; margin-top: 12px; }
 </style>
 </head>
 <body>
 
-<h1>🏗️ GestPro — Diagrama de Flujo del Sistema</h1>
-<p class="sub">Arquitectura técnica y ciclo completo de negocio</p>
+<h1>&#127959; GestPro &mdash; Diagrama de Flujo del Sistema</h1>
+<p class="subtitle">Arquitectura t&eacute;cnica y ciclo completo de negocio</p>
 
-<div class="diagram">
-
-  <!-- ARQUITECTURA TÉCNICA -->
-  <div class="section">
-    <div class="section-title">Arquitectura Técnica</div>
-    <div class="arch">
-      <div class="arch-box fe">
-        <div class="icon">⚛️</div>
-        <h3>Frontend</h3>
-        <p>React 18 + Vite<br>Tailwind CSS<br>React Router<br>Axios + Recharts<br><strong>localhost:3000</strong></p>
-      </div>
-      <div style="align-self:center; font-size:28px; color:#94a3b8;">⇄</div>
-      <div class="arch-box be">
-        <div class="icon">🟢</div>
-        <h3>Backend (API REST)</h3>
-        <p>Node.js + Express<br>JWT Auth + bcryptjs<br>Multer (archivos)<br>11 rutas REST<br><strong>localhost:3001</strong></p>
-      </div>
-      <div style="align-self:center; font-size:28px; color:#94a3b8;">⇄</div>
-      <div class="arch-box db">
-        <div class="icon">🗄️</div>
-        <h3>Base de Datos</h3>
-        <p>SQLite via sql.js<br>12 tablas<br>In-memory + file sync<br><strong>database.sqlite</strong></p>
-      </div>
-      <div style="align-self:center; font-size:28px; color:#94a3b8;">☁️</div>
-      <div class="arch-box cloud">
-        <div class="icon">🚀</div>
-        <h3>Railway (Producción)</h3>
-        <p>Auto-deploy desde GitHub<br>Volumen persistente /data<br>Build: npm run build<br><strong>gestpro-production.up.railway.app</strong></p>
-      </div>
+<!-- 1. ARQUITECTURA -->
+<div class="card">
+  <div class="card-title">1. Arquitectura T&eacute;cnica</div>
+  <div class="arch-grid">
+    <div class="arch-box box-blue">
+      <div class="icon">&#9883;</div>
+      <h3>Frontend</h3>
+      <p>React 18 + Vite<br>Tailwind CSS<br>React Router<br>Axios &amp; Recharts<br><b>:3000</b></p>
+    </div>
+    <div class="arch-arrow">&#8644;</div>
+    <div class="arch-box box-green">
+      <div class="icon">&#128290;</div>
+      <h3>Backend API REST</h3>
+      <p>Node.js + Express<br>JWT + bcryptjs<br>Multer (archivos)<br>11 rutas REST<br><b>:3001</b></p>
+    </div>
+    <div class="arch-arrow">&#8644;</div>
+    <div class="arch-box box-yellow">
+      <div class="icon">&#128451;</div>
+      <h3>Base de Datos</h3>
+      <p>SQLite via sql.js<br>12 tablas<br>In-memory + disco<br><b>database.sqlite</b></p>
+    </div>
+    <div class="arch-arrow">&#9729;</div>
+    <div class="arch-box box-purple">
+      <div class="icon">&#128640;</div>
+      <h3>Railway (Nube)</h3>
+      <p>Auto-deploy GitHub<br>Volumen /data<br>Build: npm run build<br><b>gestpro-production<br>.up.railway.app</b></p>
     </div>
   </div>
-
-  <!-- CICLO DE NEGOCIO PRINCIPAL -->
-  <div class="section">
-    <div class="section-title">Ciclo de Negocio Principal</div>
-    <div class="flow-row" style="gap:0;">
-      <div class="node n-client"><h4>👤 Clientes</h4><p>RFC, contacto</p></div>
-      <div class="conn">→<span class="conn-label">firman</span></div>
-      <div class="node n-contract"><h4>📄 Contratos</h4><p>monto, vigencia</p></div>
-      <div class="conn">→<span class="conn-label">genera</span></div>
-      <div class="node n-pres"><h4>🧮 Presupuesto</h4><p>partidas, costos</p></div>
-      <div class="conn">→<span class="conn-label">aprobado →</span></div>
-      <div class="node n-proj"><h4>📁 Proyecto</h4><p>folio, serie, PO</p></div>
-      <div class="conn">→<span class="conn-label">requiere</span></div>
-      <div class="node n-oc"><h4>🛒 Órdenes de Compra</h4><p>proveedores</p></div>
-      <div class="conn">→<span class="conn-label">recibido</span></div>
-      <div class="node n-inv"><h4>📦 Inventario</h4><p>materiales</p></div>
-    </div>
-    <div style="height:16px;"></div>
-    <div class="flow-row" style="justify-content: flex-end; padding-right: 60px; gap: 0;">
-      <div class="node n-rep"><h4>📊 Reportes</h4><p>dashboard, avance</p></div>
-      <div class="conn">←<span class="conn-label">consolida</span></div>
-      <div class="node n-fac"><h4>🧾 Facturas</h4><p>estimaciones, cobros</p></div>
-      <div class="conn">←<span class="conn-label">cobro a</span></div>
-      <div class="node n-client" style="opacity:.7;"><h4>👤 Cliente</h4><p>pagos</p></div>
-    </div>
-  </div>
-
-  <!-- FLUJO: PRESUPUESTO → PROYECTO (NUEVO) -->
-  <div class="section">
-    <div class="section-title">Flujo: Presupuesto → Proyecto con PO <span class="s-new">NUEVO</span></div>
-    <div class="highlight-box">
-      <div class="hl-title">✨ Conversión de Presupuesto Aprobado a Proyecto</div>
-      <div class="conv-row">
-        <div class="conv-step" style="border:2px solid #ca8a04;">
-          <strong>1. Presupuesto</strong>
-          <span>Se elabora con<br>desglose de costos</span>
-        </div>
-        <div class="conv-arr">→</div>
-        <div class="conv-step" style="border:2px solid #3b82f6;">
-          <strong>2. Cambio de Estado</strong>
-          <span>borrador → enviado<br>→ aprobado</span>
-        </div>
-        <div class="conv-arr">→</div>
-        <div class="conv-step" style="border:2px solid #16a34a; background:#f0fdf4;">
-          <strong>3. Botón "Crear Proyecto"</strong>
-          <span>Aparece al estar<br>en estado aprobado</span>
-        </div>
-        <div class="conv-arr">→</div>
-        <div class="conv-step" style="border:2px solid #dc2626; background:#fef2f2;">
-          <strong>4. PO del Cliente</strong>
-          <span>Número de PO<br>+ adjuntar documento</span>
-        </div>
-        <div class="conv-arr">→</div>
-        <div class="conv-step" style="border:2px solid #7c3aed; background:#faf5ff;">
-          <strong>5. Proyecto Creado</strong>
-          <span>Vinculado al<br>presupuesto origen</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ESTADOS DE PRESUPUESTO -->
-  <div class="section">
-    <div class="section-title">Estados del Presupuesto</div>
-    <div class="status-row">
-      <div class="status s-borrador">📝 Borrador</div>
-      <div class="s-arrow">→</div>
-      <div class="status s-enviado">📤 Enviado</div>
-      <div class="s-arrow">→</div>
-      <div class="status s-aprobado">✅ Aprobado</div>
-      <div class="s-arrow">→</div>
-      <div class="status s-proyecto">📁 Proyecto <span class="s-new">nueva acción</span></div>
-    </div>
-    <div style="margin-top:10px; text-align:center;">
-      <span style="font-size:11px; color:#94a3b8;">También: Enviado → ❌ No Aprobado → revisión → Borrador</span>
-    </div>
-  </div>
-
-  <!-- MÓDULOS -->
-  <div class="section">
-    <div class="section-title">Módulos del Sistema (11 páginas)</div>
-    <div class="modules">
-      <div class="mod" style="background:#eff6ff; border:1.5px solid #3b82f6;">
-        <div class="ico">📊</div><h4>Dashboard</h4>
-        <ul><li>KPIs en tiempo real</li><li>Gráfica mensual</li><li>Avance proyectos</li><li>Resumen tabla</li></ul>
-      </div>
-      <div class="mod" style="background:#f0fdf4; border:1.5px solid #16a34a;">
-        <div class="ico">📁</div><h4>Proyectos</h4>
-        <ul><li>CRUD completo</li><li>Folio + serie</li><li>Número PO ★</li><li>Doc PO adjunto ★</li></ul>
-      </div>
-      <div class="mod" style="background:#dbeafe; border:1.5px solid #2563eb;">
-        <div class="ico">👤</div><h4>Clientes</h4>
-        <ul><li>RFC, contacto</li><li>Teléfono, email</li><li>Historial</li></ul>
-      </div>
-      <div class="mod" style="background:#dcfce7; border:1.5px solid #15803d;">
-        <div class="ico">📄</div><h4>Contratos</h4>
-        <ul><li>Número, monto</li><li>Vigencia</li><li>Alcance</li></ul>
-      </div>
-      <div class="mod" style="background:#fef9c3; border:1.5px solid #ca8a04;">
-        <div class="ico">🧮</div><h4>Presupuestos</h4>
-        <ul><li>MO/Mat/Equip/CI</li><li>Partidas detalle</li><li>Flujo de estados</li><li>→ Crear Proyecto ★</li></ul>
-      </div>
-      <div class="mod" style="background:#ffedd5; border:1.5px solid #ea580c;">
-        <div class="ico">🛒</div><h4>Órdenes de Compra</h4>
-        <ul><li>Por proveedor</li><li>Partidas OC</li><li>Seguimiento entrega</li></ul>
-      </div>
-      <div class="mod" style="background:#f0fdf4; border:1.5px solid #15803d;">
-        <div class="ico">📦</div><h4>Inventario</h4>
-        <ul><li>Stock mínimo</li><li>Movimientos</li><li>Por proyecto</li></ul>
-      </div>
-      <div class="mod" style="background:#fdf4ff; border:1.5px solid #a855f7;">
-        <div class="ico">🏭</div><h4>Proveedores</h4>
-        <ul><li>RFC, categoría</li><li>Contacto</li><li>Historial OC</li></ul>
-      </div>
-      <div class="mod" style="background:#fce7f3; border:1.5px solid #be185d;">
-        <div class="ico">🧾</div><h4>Facturación</h4>
-        <ul><li>Estimaciones</li><li>% avance</li><li>Cobro / pagos</li></ul>
-      </div>
-      <div class="mod" style="background:#e0f2fe; border:1.5px solid #0284c7;">
-        <div class="ico">📈</div><h4>Reportes</h4>
-        <ul><li>Por proyecto</li><li>Presupuesto vs real</li><li>Facturación</li></ul>
-      </div>
-      <div class="mod" style="background:#f1f5f9; border:1.5px solid #64748b;">
-        <div class="ico">👥</div><h4>Usuarios</h4>
-        <ul><li>Roles: admin</li><li>proyectos</li><li>compras, almacén</li></ul>
-      </div>
-    </div>
-    <p style="font-size:10px; color:#94a3b8; margin-top:10px; text-align:right;">★ = funcionalidad nueva</p>
-  </div>
-
 </div>
+
+<!-- 2. CICLO DE NEGOCIO -->
+<div class="card">
+  <div class="card-title">2. Ciclo de Negocio Principal</div>
+  <div class="flow-row">
+    <div class="flow-node fn-blue"><h4>&#128100; Clientes</h4><p>RFC, contacto</p></div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-node fn-green"><h4>&#128196; Contratos</h4><p>monto, vigencia</p></div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-node fn-yellow"><h4>&#129518; Presupuesto</h4><p>costos, partidas</p></div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-node fn-purple"><h4>&#128193; Proyecto</h4><p>folio, PO</p></div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-node fn-orange"><h4>&#128722; OC</h4><p>proveedores</p></div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-node fn-teal"><h4>&#128230; Inventario</h4><p>materiales</p></div>
+  </div>
+  <div style="text-align:center; margin: 12px 0; color:#a0aec0; font-size:14px;">&#8595; avance del proyecto genera</div>
+  <div class="flow-row">
+    <div class="flow-node fn-pink"><h4>&#129534; Facturas</h4><p>estimaciones</p></div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-node fn-blue" style="opacity:0.8"><h4>&#128100; Cliente</h4><p>cobro / pago</p></div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-node fn-sky"><h4>&#128200; Reportes</h4><p>dashboard</p></div>
+  </div>
+</div>
+
+<!-- 3. FLUJO NUEVO PO -->
+<div class="card">
+  <div class="card-title">3. Nuevo Flujo: Presupuesto &#8594; Proyecto con PO <span class="new-badge">NUEVO</span></div>
+  <div class="po-steps">
+    <div class="po-step">
+      <div class="num">1</div>
+      <strong>Crear Presupuesto</strong>
+      <span>Desglose de costos:<br>MO / Mat / Equip / CI</span>
+    </div>
+    <div class="po-arrow">&#8594;</div>
+    <div class="po-step">
+      <div class="num">2</div>
+      <strong>Cambiar Estado</strong>
+      <span>borrador &#8594; enviado<br>&#8594; aprobado</span>
+    </div>
+    <div class="po-arrow">&#8594;</div>
+    <div class="po-step" style="border: 2px solid #48bb78;">
+      <div class="num" style="background:#48bb78;">3</div>
+      <strong>Bot&oacute;n Aparece</strong>
+      <span>"&#8594; Crear Proyecto"<br>en tabla de aprobados</span>
+    </div>
+    <div class="po-arrow">&#8594;</div>
+    <div class="po-step" style="border: 2px solid #ef4444;">
+      <div class="num" style="background:#ef4444;">4</div>
+      <strong>Ingresar PO</strong>
+      <span>N&uacute;mero de PO<br>+ adjuntar documento</span>
+    </div>
+    <div class="po-arrow">&#8594;</div>
+    <div class="po-step" style="border: 2px solid #9f7aea;">
+      <div class="num">5</div>
+      <strong>Proyecto Creado</strong>
+      <span>Vinculado al<br>presupuesto origen</span>
+    </div>
+  </div>
+</div>
+
+<!-- 4. ESTADOS -->
+<div class="card">
+  <div class="card-title">4. M&aacute;quina de Estados del Presupuesto</div>
+  <div class="states-row">
+    <div class="state-badge s1">&#128221; Borrador</div>
+    <div class="s-arr">&#8594;</div>
+    <div class="state-badge s2">&#128228; Enviado</div>
+    <div class="s-arr">&#8594;</div>
+    <div class="state-badge s3">&#10003; Aprobado</div>
+    <div class="s-arr">&#8594;</div>
+    <div class="state-badge s4">&#128193; Proyecto <span class="new-badge">nueva acci&oacute;n</span></div>
+  </div>
+  <div style="text-align:center; margin-top:12px; font-size:12px; color:#718096;">
+    Tambi&eacute;n: Enviado &#8594; &#10007; No Aprobado &#8594; Revisi&oacute;n &#8594; Borrador
+  </div>
+</div>
+
+<!-- 5. MÓDULOS -->
+<div class="card">
+  <div class="card-title">5. Los 11 M&oacute;dulos del Sistema</div>
+  <div class="modules-grid">
+    <div class="module-card" style="background:#ebf8ff; border:2px solid #4299e1;">
+      <div class="mod-icon">&#128200;</div><h4>Dashboard</h4>
+      <ul><li>KPIs en tiempo real</li><li>Gr&aacute;fica mensual</li><li>Avance proyectos</li><li>Resumen tabla</li></ul>
+    </div>
+    <div class="module-card" style="background:#f0fff4; border:2px solid #48bb78;">
+      <div class="mod-icon">&#128193;</div><h4>Proyectos</h4>
+      <ul><li>CRUD completo</li><li>Folio + serie</li><li class="new-tag">&#9733; N&uacute;mero PO</li><li class="new-tag">&#9733; Documento PO</li></ul>
+    </div>
+    <div class="module-card" style="background:#dbeafe; border:2px solid #3b82f6;">
+      <div class="mod-icon">&#128100;</div><h4>Clientes</h4>
+      <ul><li>RFC, contacto</li><li>Tel&eacute;fono, email</li><li>Activo / inactivo</li></ul>
+    </div>
+    <div class="module-card" style="background:#dcfce7; border:2px solid #22c55e;">
+      <div class="mod-icon">&#128196;</div><h4>Contratos</h4>
+      <ul><li>N&uacute;mero, monto</li><li>Vigencia</li><li>Alcance</li></ul>
+    </div>
+    <div class="module-card" style="background:#fef3c7; border:2px solid #f59e0b;">
+      <div class="mod-icon">&#129518;</div><h4>Presupuestos</h4>
+      <ul><li>MO/Mat/Equip/CI</li><li>Partidas detalle</li><li>Flujo de estados</li><li class="new-tag">&#9733; Crear Proyecto</li></ul>
+    </div>
+    <div class="module-card" style="background:#ffedd5; border:2px solid #f97316;">
+      <div class="mod-icon">&#128722;</div><h4>Órdenes de Compra</h4>
+      <ul><li>Por proveedor</li><li>Partidas OC</li><li>Seguimiento entrega</li></ul>
+    </div>
+    <div class="module-card" style="background:#d1fae5; border:2px solid #10b981;">
+      <div class="mod-icon">&#128230;</div><h4>Inventario</h4>
+      <ul><li>Stock m&iacute;nimo</li><li>Movimientos</li><li>Por proyecto</li></ul>
+    </div>
+    <div class="module-card" style="background:#fdf4ff; border:2px solid #a855f7;">
+      <div class="mod-icon">&#127981;</div><h4>Proveedores</h4>
+      <ul><li>RFC, categor&iacute;a</li><li>Contacto</li><li>Historial OC</li></ul>
+    </div>
+    <div class="module-card" style="background:#fce7f3; border:2px solid #ec4899;">
+      <div class="mod-icon">&#129534;</div><h4>Facturaci&oacute;n</h4>
+      <ul><li>Estimaciones</li><li>% avance</li><li>Cobro / pagos</li></ul>
+    </div>
+    <div class="module-card" style="background:#e0f2fe; border:2px solid #0ea5e9;">
+      <div class="mod-icon">&#128202;</div><h4>Reportes</h4>
+      <ul><li>Por proyecto</li><li>Presupuesto vs real</li><li>Facturaci&oacute;n mensual</li></ul>
+    </div>
+    <div class="module-card" style="background:#f1f5f9; border:2px solid #64748b;">
+      <div class="mod-icon">&#128101;</div><h4>Usuarios</h4>
+      <ul><li>Rol: admin</li><li>Rol: proyectos</li><li>Rol: compras</li><li>Rol: alm&eacute;n</li></ul>
+    </div>
+  </div>
+  <p class="legend">&#9733; = funcionalidad nueva</p>
+</div>
+
 </body>
 </html>
